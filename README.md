@@ -12,6 +12,8 @@ npm install --save rdf-translator
 
 ## Usage
 
+* From a string.
+
 ```javascript
 var rdfTranslator = require('rdf-translator');
 var str = `
@@ -33,6 +35,21 @@ rdfTranslator(str, 'xml', 'n3', function(err, data) {
 
 
 });
+
+```
+
+
+* From a URI
+
+```javascript
+var rdfTranslator = require('rdf-translator');
+
+let uri = 'https://raw.githubusercontent.com/DOREMUS-ANR/doremus-ontology/master/doremus.ttl';
+rdfTranslator(uri, 'n3', 'json-ld', function(err, data) {
+  var json == JSON.parse(data);
+  // your code here
+});
+
 ```
 
 ## API
@@ -43,7 +60,7 @@ rdfTranslator(str, 'xml', 'n3', function(err, data) {
 
 Type: `string`
 
-Input string.
+Input string (i.e. in xml-rdf or turtle format) _-or-_ URI of the file to convert.
 
 #### source
 

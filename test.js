@@ -57,6 +57,17 @@ test.cb('convert xml to n3', t => {
   });
 });
 
+test.cb('convert from uri', t => {
+    t.plan(2);
+
+  let uri = 'https://raw.githubusercontent.com/DOREMUS-ANR/doremus-ontology/master/doremus.ttl';
+  rdfTranslator(uri, 'n3', 'json-ld', function(err, data) {
+    t.falsy(err);
+    t.truthy(JSON.parse(data)['@context']);
+    t.end();
+  });
+
+});
 
 function flattenTtl(ttl) {
   return ttl.replace(/[\n\r\s]/g, '');

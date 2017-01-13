@@ -1,5 +1,6 @@
 const request = require('request');
 const noop = require('node-noop').noop;
+const validUrl = require('valid-url');
 
 export default function rdfTranslator(str, source, target, callback = noop) {
   if (!str)
@@ -7,7 +8,8 @@ export default function rdfTranslator(str, source, target, callback = noop) {
   if (!source || !target)
     throw Error('No source or target format are specified');
 
-  let url = `http://rdf-translator.appspot.com/convert/${source}/${target}/content`;
+  let suffix = validUrl.isUri(str) ? str : 'content';
+  let url = `http://rdf-translator.appspot.com/convert/${source}/${target}/${suffix}`;
 
   request.post({
     url: url,
