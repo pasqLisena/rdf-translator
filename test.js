@@ -23,33 +23,39 @@ var output = `
     `;
 
 
-test('throw error on missing string', t => {
-  const error = t.throws(() => {
-    rdfTranslator('', 'xml', 'n3');
-  }, Error);
+test.cb('return an error on missing string', t => {
+  t.plan(2);
+  rdfTranslator('', 'xml', 'n3')
+    .catch(err => {
+      t.truthy(err);
+      t.is(err.message, 'Nothing to convert: null or empty string');
+      t.end();
+    });
 
-  t.is(error.message, 'Nothing to convert: null or empty string');
 });
 
-test('throws error on missing source format', t => {
-  const error = t.throws(() => {
-    rdfTranslator(input);
-  }, Error);
-
-  t.is(error.message, 'No source or target format are specified');
+test.cb('return an error on missing source format', t => {
+  t.plan(2);
+  rdfTranslator(input, null, 'anything')
+    .catch(err => {
+      t.truthy(err);
+      t.is(err.message, 'No source or target format are specified');
+      t.end();
+    });
 });
 
-test('throws error on missing target format', t => {
-  const error = t.throws(() => {
-    rdfTranslator(input, 'xml');
-  }, Error);
-
-  t.is(error.message, 'No source or target format are specified');
+test.cb('return an error on missing target format', t => {
+  t.plan(2);
+  rdfTranslator(input, 'xml', null)
+    .catch(err => {
+      t.truthy(err);
+      t.is(err.message, 'No source or target format are specified');
+      t.end();
+    });
 });
 
 test.cb('convert xml to n3', t => {
   t.plan(2);
-
   rdfTranslator(input, 'xml', 'n3', function(err, data) {
     t.falsy(err);
     t.is(flattenTtl(data), flattenTtl(output));
@@ -58,7 +64,7 @@ test.cb('convert xml to n3', t => {
 });
 
 test.cb('convert from uri', t => {
-    t.plan(2);
+  t.plan(2);
 
   let uri = 'https://raw.githubusercontent.com/DOREMUS-ANR/doremus-ontology/master/doremus.ttl';
   rdfTranslator(uri, 'n3', 'json-ld', function(err, data) {
@@ -68,6 +74,19 @@ test.cb('convert from uri', t => {
   });
 
 });
+
+
+test.cb('using promises', t => {
+  t.plan(1);
+
+  let uri = 'https://raw.githubusercontent.com/DOREMUS-ANR/doremus-ontology/master/doremus.ttl';
+  rdfTranslator(uri, 'n3', 'json-ld')
+    .then(data => {
+      t.truthy(JSON.parse(data)['@context']);
+      t.end();
+    });
+});
+
 
 function flattenTtl(ttl) {
   return ttl.replace(/[\n\r\s]/g, '');

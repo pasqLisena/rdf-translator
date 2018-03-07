@@ -2,7 +2,7 @@
 
 > Convert between rdf formats
 
-It is a javascript connector for the [rdf-translator](http://rdf-translator.appspot.com/) APIs.
+It is a javascript connector for the [rdf-translator](http://rdf-translator.appspot.com/) APIs using Promises.
 
 ## Install
 
@@ -26,18 +26,25 @@ var str = `
   </rdf:RDF>
 `
 
-rdfTranslator(str, 'xml', 'n3', function(err, data) {
-    if (err) return console.error(err);
+rdfTranslator(str, 'xml', 'n3')
+  .then(data => {
     console.log(data);
     \\ <http://dbpedia.org/page/Spider-Man> <http://xmlns.com/foaf/0.1/name> "Peter Parker" .
     \\ <http://dbpedia.org/page/Spider-Man> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Person> .
     \\ <http://dbpedia.org/page/Spider-Man> <http://xmlns.com/foaf/0.1/mbox> <mailto:peter.parker@dailybugle.com> .
-
-
-});
+  }).catch(err => {
+    console.error(err);
+  });
 
 ```
 
+In alternative, with traditional callbacks:
+```javascript
+rdfTranslator(str, 'xml', 'n3', function(err, data) {
+    if (err) return console.error(err);
+    console.log(data);
+});
+```
 
 * From a URI
 
@@ -45,10 +52,11 @@ rdfTranslator(str, 'xml', 'n3', function(err, data) {
 var rdfTranslator = require('rdf-translator');
 
 let uri = 'https://raw.githubusercontent.com/DOREMUS-ANR/doremus-ontology/master/doremus.ttl';
-rdfTranslator(uri, 'n3', 'json-ld', function(err, data) {
-  var json == JSON.parse(data);
-  // your code here
-});
+rdfTranslator(uri, 'n3', 'json-ld')
+  .then( data => {
+    var json == JSON.parse(data);
+    // your code here
+  });
 
 ```
 
